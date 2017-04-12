@@ -11,10 +11,10 @@ import org.junit.Test;
 
 import com.thoughtworks.xstream.XStream;
 
-import br.com.alura.loja.modelo.Carrinho;
+import br.com.alura.loja.modelo.Projeto;
 import junit.framework.Assert;
 
-public class ClienteTest {
+public class ProjetoTest {
 
 	private HttpServer servidor;
 	
@@ -29,12 +29,12 @@ public class ClienteTest {
 	}
 	
 	@Test
-	public void testaQueBuscarUmCarrinhoTrazOCarrinhoEsperado(){
+	public void testaQueORecursoParaOProjetoFunciona(){
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target("http://localhost:80");
-		String conteudo = target.path("/carrinhos").request().get(String.class);
-		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
-		Assert.assertEquals("Rua Vergueiro 3185, 8 andar", carrinho.getRua());
+		String resposta = target.path("/projetos").request().get(String.class);
+		Projeto projeto = (Projeto) new XStream().fromXML(resposta);
+		Assert.assertEquals("Minha loja", projeto.getNome());
 		client.close();
 	}
 }

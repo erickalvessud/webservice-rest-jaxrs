@@ -77,4 +77,9 @@ public class Carrinho {
 		return produtos;
 	}
 
+	public String toXML() {
+		// TODO Auto-generated method stub
+		return new XStream().toXML(this);
+	}
+
 }
