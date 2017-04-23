@@ -31,6 +31,7 @@ public class ClienteTest {
 		this.servidor = Servidor.startaServidor();
 		
 		ClientConfig clientConfig = new ClientConfig();
+		//configura o cliente para logar o que esta acontecendo nas requisicoes. 
 		clientConfig.register(new LoggingFilter());
 		
 		this.client = ClientBuilder.newClient(clientConfig);
@@ -45,8 +46,7 @@ public class ClienteTest {
 	@Test
 	public void testaQueBuscarUmCarrinhoTrazOCarrinhoEsperado(){
 		
-		String conteudo = target.path("/carrinhos/1").request().get(String.class);
-		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
+		Carrinho carrinho = target.path("/carrinhos/1").request().get(Carrinho.class);
 		Assert.assertEquals("Rua Vergueiro 3185, 8 andar", carrinho.getRua());
 		client.close();
 	}
@@ -59,9 +59,7 @@ public class ClienteTest {
 		carrinho.setRua("Rua Vergueiro");
 		carrinho.setCidade("Sao Paulo");
 		
-		String conteudo = carrinho.toXML();
-		
-		Entity<String> entity = Entity.entity(conteudo, MediaType.APPLICATION_XML);
+		Entity<Carrinho> entity = Entity.entity(carrinho, MediaType.APPLICATION_XML);
 		
 		Response response = target.path("/carrinhos").request().post(entity);
 		
@@ -69,8 +67,8 @@ public class ClienteTest {
 		
 		String location = response.getHeaderString("Location");
 		
-		conteudo = client.target(location).request().get(String.class);
-		Assert.assertTrue(conteudo.contains("Tablet"));
+		Carrinho carrinhoCarregado = client.target(location).request().get(Carrinho.class);
+		Assert.assertEquals("Tablet", carrinhoCarregado.getProdutos().get(0).getNome());
 		
 	}
 }
